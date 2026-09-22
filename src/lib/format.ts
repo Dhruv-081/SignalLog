@@ -58,6 +58,8 @@ export const CATEGORIES = [
   "Marketplace",
 ];
 
+export const STARTUP_CATEGORIES = CATEGORIES;
+
 export const MILESTONE_CATEGORIES = [
   { value: "revenue", label: "Revenue" },
   { value: "users", label: "Users" },

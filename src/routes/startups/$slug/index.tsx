@@ -143,11 +143,26 @@ function StartupProfile() {
                 <VerifyBadge verified={startup.verified} />
               </div>
               <p className="mt-1.5 text-sm text-muted-foreground">{startup.tagline}</p>
-              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-                <span className="rounded-full bg-panel-raised px-2.5 py-1">{startup.category}</span>
+              <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                <span className="rounded-full bg-panel-raised px-2.5 py-1 text-foreground font-medium">{startup.category}</span>
+                {startup.stage ? (
+                  <span className="rounded-full bg-panel-raised px-2.5 py-1 text-signal">
+                    {startup.stage}
+                  </span>
+                ) : null}
+                {startup.team_size ? (
+                  <span className="rounded-full bg-panel-raised px-2.5 py-1">
+                    {startup.team_size}
+                  </span>
+                ) : null}
+                {startup.target_market ? (
+                  <span className="rounded-full bg-panel-raised px-2.5 py-1">
+                    Market: {startup.target_market}
+                  </span>
+                ) : null}
                 {startup.location ? (
                   <span className="flex items-center gap-1.5">
-                    <MapPin className="size-3.5" /> {startup.location}
+                    <MapPin className="size-3.5 text-signal" /> {startup.location}
                   </span>
                 ) : null}
                 {startup.website ? (
@@ -155,9 +170,19 @@ function StartupProfile() {
                     href={startup.website}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1.5 hover:text-foreground"
+                    className="flex items-center gap-1.5 text-foreground hover:underline"
                   >
-                    <Globe className="size-3.5" /> Website <ExternalLink className="size-3" />
+                    <Globe className="size-3.5 text-signal" /> Website <ExternalLink className="size-3" />
+                  </a>
+                ) : null}
+                {startup.demo_url ? (
+                  <a
+                    href={startup.demo_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-1.5 text-signal hover:underline"
+                  >
+                    Live Demo <ExternalLink className="size-3" />
                   </a>
                 ) : null}
               </div>
@@ -287,11 +312,31 @@ function StartupProfile() {
           </TabsContent>
 
           <TabsContent value="about" className="mt-4">
-            <div className="glass rounded-2xl p-6">
-              <h3 className="font-display font-semibold">About {startup.name}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {startup.description ?? startup.tagline}
-              </p>
+            <div className="glass rounded-2xl p-6 space-y-5">
+              <div>
+                <h3 className="font-display font-semibold">About {startup.name}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {startup.description ?? startup.tagline}
+                </p>
+              </div>
+
+              {startup.tech_stack ? (
+                <div className="border-t border-border/60 pt-4">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Technologies &amp; Architecture
+                  </h4>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {startup.tech_stack.split(",").map((tech, i) => (
+                      <span
+                        key={i}
+                        className="rounded-lg bg-panel-raised px-2.5 py-1 text-xs text-foreground border border-border/60"
+                      >
+                        {tech.trim()}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </div>
           </TabsContent>
         </Tabs>

@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
 import type { Profile } from "@/lib/api";
+import { getStoredProfile } from "@/lib/mock";
 
 type AuthContextValue = {
   session: Session | null;
@@ -45,16 +46,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const { data: profile } = useQuery({
     queryKey: ["my-profile", userId],
-    enabled: !!userId,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("user_id", userId!)
-        .maybeSingle();
-      if (error) throw error;
-      return data as Profile | null;
+      if (userId) {
+        try {
+          const { data, error } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("user_id", userId)
+            .maybeSingle();
+          if (!error && data) {
+            const stored = getStoredProfile();
+            return { ...stored, ...data } as Profile;
+          }
+        } catch (err) {
+          console.warn("Error fetching Supabase profile, fallback to stored:", err);
+        }
+      }
+      return getStoredProfile();
     },
+    initialData: getStoredProfile,
   });
 
   return (
@@ -62,7 +72,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         session,
         user: session?.user ?? null,
-        profile: profile ?? null,
+        profile: profile ?? getStoredProfile(),
         loading,
         signOut: async () => {
           await supabase.auth.signOut();

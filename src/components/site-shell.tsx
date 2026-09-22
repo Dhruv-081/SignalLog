@@ -21,6 +21,7 @@ const NAV = [
   { to: "/explore", label: "Explore" },
   { to: "/milestones", label: "Milestones" },
   { to: "/verification", label: "Verification" },
+  { to: "/dashboard", label: "Dashboard" },
 ] as const;
 
 export function SiteHeader() {
